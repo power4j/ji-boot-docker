@@ -1,7 +1,7 @@
 version: '3'
 services:
   flygon-admin-db:
-    image: flygon-admin-db:0.1
+    image: power4j/flygon-admin-db:0.1
     restart: always
     container_name: flygon-admin-db
     security_opt:
@@ -9,19 +9,34 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - 3306:3306
+      - 65004:3306
     volumes:
       - /opt/flygon/flygon-admin-db:/var/lib/mysql
     command: --lower_case_table_names=1 --default-time-zone=+8:00 --default-authentication-plugin=mysql_native_password
-
   flygon-admin:
-    image: flygon-admin:0.1
+    image: power4j/flygon-admin:0.1
     restart: always
     container_name: flygon-admin
     environment:
       MYSQL_HOST: flygon-admin-db
+      MYSQL_PORT: 3306
       MYSQL_PWD: root
       MYSQL_PWD: root
+      JAVA_OPTS: "-Xms512m -Xmx512m -Djava.security.egd=file:/dev/./urandom"
     ports:
-      - 8081:8081
-    command: --spring.profiles.active=prod 
+      - 58081:8081
+      - 65003:8081
+    volumes:
+      - /opt/flygon/flygon-admin/logs:/app/logs
+    command: --spring.profiles.active=prod
+  flygon-ui:
+    image: power4j/flygon-ui:0.1
+    restart: always
+    container_name: flygon-ui
+    ports:
+      - 58080:80
+      - 58043:443
+      - 65002:80
+    volumes:
+      - /opt/flygon/flygon-ui/log/nginx:/var/log/nginx
+    
