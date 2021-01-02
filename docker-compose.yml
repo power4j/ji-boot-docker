@@ -1,0 +1,27 @@
+version: '3'
+services:
+  flygon-admin-db:
+    image: flygon-admin-db:0.1
+    restart: always
+    container_name: flygon-admin-db
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+    volumes:
+      - /opt/flygon/flygon-admin-db:/var/lib/mysql
+    command: --lower_case_table_names=1 --default-time-zone=+8:00 --default-authentication-plugin=mysql_native_password
+
+  flygon-admin:
+    image: flygon-admin:0.1
+    restart: always
+    container_name: flygon-admin
+    environment:
+      MYSQL_HOST: flygon-admin-db
+      MYSQL_PWD: root
+      MYSQL_PWD: root
+    ports:
+      - 8081:8081
+    command: --spring.profiles.active=prod 
