@@ -10,8 +10,8 @@ services:
       MYSQL_ROOT_PASSWORD: root
     ports:
       - 65004:3306
-    volumes:
-      - /opt/flygon/flygon-admin-db:/var/lib/mysql
+    #volumes:
+    #  - /opt/flygon/flygon-admin-db:/var/lib/mysql
     command: --lower_case_table_names=1 --default-time-zone=+8:00 --default-authentication-plugin=mysql_native_password
   flygon-admin:
     image: power4j/flygon-admin:0.1
@@ -22,12 +22,14 @@ services:
       MYSQL_PORT: 3306
       MYSQL_PWD: root
       MYSQL_PWD: root
-      JAVA_OPTS: "-Xms512m -Xmx512m -Djava.security.egd=file:/dev/./urandom"
+      JAVA_TOOL_OPTIONS: "-XX:+PrintCommandLineFlags -XX:+PrintGC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:/gc/gc.log -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=3 -XX:GCLogFileSize=5m"
+      JAVA_OPTS: "-Xms256m -Xmx256m -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=256m -XX:+UseConcMarkSweepGC -XX:+ExplicitGCInvokesConcurrent -Djava.security.egd=file:/dev/./urandom"
     ports:
       - 58081:8081
       - 65003:8081
     volumes:
       - /opt/flygon/flygon-admin/logs:/app/logs
+      - /opt/flygon/flygon-admin/gc:/gc
     command: --spring.profiles.active=prod
   flygon-ui:
     image: power4j/flygon-ui:0.1
@@ -39,4 +41,3 @@ services:
       - 65002:80
     volumes:
       - /opt/flygon/flygon-ui/log/nginx:/var/log/nginx
-    
