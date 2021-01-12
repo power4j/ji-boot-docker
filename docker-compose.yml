@@ -1,7 +1,7 @@
 version: '3'
 services:
   flygon-admin-db:
-    image: power4j/flygon-admin-db:0.1
+    image: power4j/flygon-admin-db:0.1.1
     restart: always
     container_name: flygon-admin-db
     security_opt:
@@ -14,7 +14,7 @@ services:
     #  - /opt/flygon/flygon-admin-db:/var/lib/mysql
     command: --lower_case_table_names=1 --default-time-zone=+8:00 --default-authentication-plugin=mysql_native_password
   flygon-admin:
-    image: power4j/flygon-admin:0.1
+    image: power4j/flygon-admin:0.1.1
     restart: always
     container_name: flygon-admin
     environment:
@@ -32,7 +32,7 @@ services:
       - /opt/flygon/flygon-admin/gc:/gc
     command: --spring.profiles.active=prod
   flygon-ui:
-    image: power4j/flygon-ui:0.1
+    image: power4j/flygon-ui:0.1.1
     restart: always
     container_name: flygon-ui
     ports:
