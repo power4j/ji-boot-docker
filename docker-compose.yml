@@ -1,9 +1,9 @@
 version: '3'
 services:
-  flygon-admin-db:
-    image: power4j/flygon-admin-db:0.1.1
+  ji-admin-db:
+    image: registry.cn-hangzhou.aliyuncs.com/power4j/ji-admin-db
     restart: always
-    container_name: flygon-admin-db
+    container_name: ji-admin-db
     security_opt:
       - seccomp:unconfined
     environment:
@@ -11,33 +11,33 @@ services:
     ports:
       - 65004:3306
     #volumes:
-    #  - /opt/flygon/flygon-admin-db:/var/lib/mysql
+    #  - /opt/ji-boot/ji-admin-db:/var/lib/mysql
     command: --lower_case_table_names=1 --default-time-zone=+8:00 --default-authentication-plugin=mysql_native_password
-  flygon-admin:
-    image: power4j/flygon-admin:0.1.1
+  ji-admin-server:
+    image: registry.cn-hangzhou.aliyuncs.com/power4j/ji-admin-server
     restart: always
-    container_name: flygon-admin
+    container_name: ji-admin-server
     environment:
-      MYSQL_HOST: flygon-admin-db
+      MYSQL_HOST: ji-admin-db
       MYSQL_PORT: 3306
       MYSQL_PWD: root
       MYSQL_PWD: root
       JAVA_TOOL_OPTIONS: "-XX:+PrintCommandLineFlags -XX:+PrintGC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:/gc/gc.log -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=3 -XX:GCLogFileSize=5m"
-      JAVA_OPTS: "-Xms256m -Xmx256m -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=256m -XX:+UseConcMarkSweepGC -XX:+ExplicitGCInvokesConcurrent -Djava.security.egd=file:/dev/./urandom"
+      JAVA_OPTS: "-Xms128m -Xmx256m -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=256m -XX:+UseConcMarkSweepGC -XX:+ExplicitGCInvokesConcurrent -Djava.security.egd=file:/dev/./urandom"
     ports:
       - 58081:8081
       - 65003:8081
     volumes:
-      - /opt/flygon/flygon-admin/logs:/app/logs
-      - /opt/flygon/flygon-admin/gc:/gc
+      - /opt/ji-boot/ji-admin-server/logs:/app/logs
+      - /opt/ji-boot/ji-admin-server/gc:/gc
     command: --spring.profiles.active=prod
-  flygon-ui:
-    image: power4j/flygon-ui:0.1.1
+  ji-admin-ui:
+    image: registry.cn-hangzhou.aliyuncs.com/power4j/ji-admin-ui
     restart: always
-    container_name: flygon-ui
+    container_name: ji-admin-ui
     ports:
       - 58080:80
       - 58043:443
       - 65002:80
     volumes:
-      - /opt/flygon/flygon-ui/log/nginx:/var/log/nginx
+      - /opt/ji-boot/ji-admin-ui/log/nginx:/var/log/nginx
