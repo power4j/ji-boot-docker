@@ -1,5 +1,13 @@
 version: '3'
 services:
+  ji-redis:
+    image: redis:6.0.5
+    restart: always
+    container_name: ji-redis
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - 65005:6379
   ji-admin-db:
     image: registry.cn-hangzhou.aliyuncs.com/power4j/ji-admin-db
     restart: always
@@ -8,6 +16,7 @@ services:
       - seccomp:unconfined
     environment:
       MYSQL_ROOT_PASSWORD: root
+      TZ: Asia/Shanghai
     ports:
       - 65004:3306
     #volumes:
@@ -18,6 +27,8 @@ services:
     restart: always
     container_name: ji-admin-server
     environment:
+      TZ: Asia/Shanghai
+      REDIS_HOST: ji-redis
       MYSQL_HOST: ji-admin-db
       MYSQL_PORT: 3306
       MYSQL_PWD: root
@@ -25,12 +36,12 @@ services:
       JAVA_TOOL_OPTIONS: "-XX:+PrintCommandLineFlags -XX:+PrintGC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:/gc/gc.log -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=3 -XX:GCLogFileSize=5m"
       JAVA_OPTS: "-Xms128m -Xmx256m -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=256m -XX:+UseConcMarkSweepGC -XX:+ExplicitGCInvokesConcurrent -Djava.security.egd=file:/dev/./urandom"
     ports:
-      - 58081:8081
-      - 65003:8081
+      - 58081:18081
+      - 65003:18081
     volumes:
       - /opt/ji-boot/ji-admin-server/logs:/app/logs
       - /opt/ji-boot/ji-admin-server/gc:/gc
-    command: --spring.profiles.active=prod
+    command: --spring.profiles.active=demo
   ji-admin-ui:
     image: registry.cn-hangzhou.aliyuncs.com/power4j/ji-admin-ui
     restart: always
